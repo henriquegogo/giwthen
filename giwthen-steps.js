@@ -1,26 +1,29 @@
 (function() {
     var assert = GiWThen.assert;
+    var sandbox;
 
     GiWThen.steps.add({
         Before: function() {
-            return "";
+            sandbox = window.open();
         },
-        "I enter in url '(.*)'": function(url) {
-            document.container.location.href = url;
+        After: function() {
+            if (sandbox)
+                sandbox.close();
         },
-        "I wait (.*) secs": function(secs) {
-            var start = new Date().getTime();
-            for (var i = 0; i < 1e7; i++) {
-                if ((new Date().getTime() - start) > (secs * 1000)) {
-                    break;
-                }
-            }
+        "I enter in url '(.*)'": function(url, callback) {
+            sandbox.location.href = url;
+            return callback();
+        },
+        "I wait (.*) secs": function(secs, callback) {
+            setTimeout(function() {
+                return callback();
+            }, (secs * 1000))
         },
         "I set (.*) value as '(.*)'": function(inputName, value) {
-            document.querySelector("#" + inputName).value = value;
+            sandbox.document.querySelector("#" + inputName).value = value;
         },
         "The (.*) value should be '(.*)'": function(inputName, value) {
-            var inputValue = document.your_form[inputName].value;
+            var inputValue = sandbox.document.your_form[inputName].value;
 
             assert(inputValue == value);
         }

@@ -12,9 +12,12 @@
     };
 
     var scenario = function(text) {
+        self.steps.After();
         self.steps.Before();
 
         currentScenario = text;
+
+        return window;
     };
 
     var given = when = then = and = function(testText) {
@@ -26,6 +29,9 @@
             
             if (matches) {
                 matches.shift();
+                matches.push(function() { return window });
+
+                console.log(matches);
                 runStep.apply(this, matches);
             }
         }
@@ -43,7 +49,11 @@
     };
 
     var report = function() {
-        console.log(reportData.success.length + "/" + reportData.done.length + " tests with success. " + reportData.error.length + " with error");
+        self.steps.After();
+
+        var reportText = reportData.success.length + "/" + reportData.done.length + " tests with success. " + reportData.error.length + " with error";
+        document.write(reportText);
+        console.log(reportText);
         console.log(reportData);
     };
 
@@ -58,5 +68,10 @@
         globals: [scenario, given, when, then, and]
     };
 
+    window.Scenario = scenario;
+    window.Given = given;
+    window.When = when;
+    window.Then = then;
+    window.And = and;
     window.GiWThen = self;
 })();

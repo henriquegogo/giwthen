@@ -1,9 +1,9 @@
-(function(Scenario, Given, When, Then, And) {
+(function() {
     
-    Scenario("Search something");
-        Given("I enter in url 'http://localhost/'");
-        And("I wait 1 secs");
+    Scenario("Search something").
+        Given("I enter in url 'http://www.google.com/'").
+        And("I wait 10 secs");
 
     GiWThen.report();
 
-}).apply(this, GiWThen.globals);
+})();
