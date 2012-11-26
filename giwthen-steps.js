@@ -1,25 +1,29 @@
-(function(Assert) {
+(function() {
+    var assert = GiWThen.assert;
 
-    GiWThen.Steps = {
+    GiWThen.steps.add({
         Before: function() {
-            document.body.innerHTML = "\
-                <form name='your_form'>\
-                    <label>Name</label>\
-                    <input type='text' name='name'><br>\
-                    <label>Age</label>\
-                    <input type='text' name='age'><br>\
-                    <input type='submit'>\
-                </form>\
-            ";
+            return "";
+        },
+        "I enter in url '(.*)'": function(url) {
+            document.container.location.href = url;
+        },
+        "I wait (.*) secs": function(secs) {
+            var start = new Date().getTime();
+            for (var i = 0; i < 1e7; i++) {
+                if ((new Date().getTime() - start) > (secs * 1000)) {
+                    break;
+                }
+            }
         },
         "I set (.*) value as '(.*)'": function(inputName, value) {
-            document.your_form[inputName].value = value;
+            document.querySelector("#" + inputName).value = value;
         },
         "The (.*) value should be '(.*)'": function(inputName, value) {
             var inputValue = document.your_form[inputName].value;
 
-            Assert(inputValue == value);
+            assert(inputValue == value);
         }
-    };
+    });
 
-})(GiWThen.Assert);
+})();

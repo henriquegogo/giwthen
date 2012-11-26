@@ -1,17 +1,24 @@
 (function() {
     var currentScenario = "";
-    var executedTests = 0;
-    var successTests = 0;
-    var errorTests = 0;
+    var reportData = {
+        done: [],
+        success: [],
+        error: []
+    }
 
-    var Scenario = function(text) {
-        self.Steps.Before();
+    var mergeObject = function(obj1, obj2) {
+        for (attr in obj2) obj1[attr] = obj2[attr];
+        return obj1;
+    };
+
+    var scenario = function(text) {
+        self.steps.Before();
 
         currentScenario = text;
     };
 
-    var Given = When = Then = And = function(testText) {
-        var steps = self.Steps;
+    var given = when = then = and = function(testText) {
+        var steps = self.steps;
 
         for (step in steps) {
             var runStep = steps[step];
@@ -24,27 +31,31 @@
         }
     };
 
-    var Assert = function(condition) {
-        executedTests++;
+    var assert = function(condition) {
+        reportData.done.push(currentScenario);
 
         if (condition) {
-            successTests++;
+            reportData.success.push(currentScenario);
 
         } else {
-            errorTests++;
-            console.log("Error on '" + currentScenario + "' scenario");
+            reportData.error.push(currentScenario);
         }
     };
 
-    var TestResult = function() {
-        console.log(successTests + "/" + executedTests + " tests with success. " + errorTests + " with error");
+    var report = function() {
+        console.log(reportData.success.length + "/" + reportData.done.length + " tests with success. " + reportData.error.length + " with error");
+        console.log(reportData);
     };
 
     var self = {
-        Steps: {},
-        Assert: Assert,
-        TestResult: TestResult,
-        Globals: [Scenario, Given, When, Then, And]
+        steps: {
+            add: function(newSteps) {
+                mergeObject(this, newSteps);
+            }
+        },
+        assert: assert,
+        report: report,
+        globals: [scenario, given, when, then, and]
     };
 
     window.GiWThen = self;
