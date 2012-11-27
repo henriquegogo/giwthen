@@ -1,7 +1,7 @@
 (function() {
     var assert = GiWThen.assert;
     var sandbox;
-
+    
     GiWThen.steps.add({
         Before: function() {
             sandbox = window.open();
@@ -11,8 +11,12 @@
                 sandbox.close();
         },
         "I enter in url '(.*)'": function(url, callback) {
+            sandbox.onload = function() {
+                alert('foi');
+                callback();
+            };
+            
             sandbox.location.href = url;
-            return callback();
         },
         "I wait (.*) secs": function(secs, callback) {
             setTimeout(function() {

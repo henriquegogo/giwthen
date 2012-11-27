@@ -1,8 +1,10 @@
 (function() {
     
-    Scenario("Search something").
-        Given("I enter in url 'http://www.google.com/'").
-        And("I wait 10 secs");
+    Scenario("Search something");
+        Given("I enter in url 'http://localhost/'", function() {
+        alert("gogas");
+        });
+        
 
     GiWThen.report();
 

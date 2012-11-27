@@ -16,8 +16,6 @@
         self.steps.Before();
 
         currentScenario = text;
-
-        return window;
     };
 
     var given = when = then = and = function(testText) {
@@ -29,10 +27,8 @@
             
             if (matches) {
                 matches.shift();
-                matches.push(function() { return window });
 
-                console.log(matches);
-                runStep.apply(this, matches);
+                var stepReturn = runStep.apply(this, matches);
             }
         }
     };
@@ -49,8 +45,6 @@
     };
 
     var report = function() {
-        self.steps.After();
-
         var reportText = reportData.success.length + "/" + reportData.done.length + " tests with success. " + reportData.error.length + " with error";
         document.write(reportText);
         console.log(reportText);
@@ -65,13 +59,15 @@
         },
         assert: assert,
         report: report,
-        globals: [scenario, given, when, then, and]
+        globals: {
+            Scenario: scenario,
+            Given: given,
+            When: when,
+            Then: then,
+            And: and
+        }
     };
 
-    window.Scenario = scenario;
-    window.Given = given;
-    window.When = when;
-    window.Then = then;
-    window.And = and;
+    mergeObject(window, self.globals);
     window.GiWThen = self;
 })();
